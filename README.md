@@ -2,7 +2,9 @@
 
 This project is an attempt to learn and play with  [Fuse](http://www.fusetools.com/) by replicating the iOS stock camera app user interface.
 
-Here's how far I got: [movie](./docs/fuse-ios-camera-ux-720p.mov).
+Here's how far I got: [movie](./docs/fuse-ios-camera-ux-720p.mov) [gif](./docs/fuse-ios-camera-ux.gif)
+
+![gif](./docs/fuse-ios-camera-ux.gif "preview")
 
 My hope is that the video above is indistinguishable from the stock iOS camera app. It includes:
 - [x] Mode switcher
