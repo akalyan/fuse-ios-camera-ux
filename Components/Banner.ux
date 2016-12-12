@@ -1,0 +1,6 @@
+<Rectangle ux:Class="Banner" Padding="20" Alignment="Center" Color="#999" HitTestMode="None">
+  <string ux:Property="Text" />
+
+  <Stroke Width="2" Color="#fff" />
+  <Text Font="DIN1451" FontSize="24" Color="#fff" Value="{Property Text}" />
+</Rectangle>

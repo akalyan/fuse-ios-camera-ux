@@ -1,0 +1,7 @@
+<Image ux:Class="HdrIcon" Height="10">
+  <MultiDensityImageSource>
+    <FileImageSource Density="1" File="../Assets/images/hdr-icon.png" />
+    <FileImageSource Density="2" File="../Assets/images/hdr-icon@2x.png" />
+    <FileImageSource Density="4" File="../Assets/images/hdr-icon@4x.png" />
+  </MultiDensityImageSource>
+</Image>

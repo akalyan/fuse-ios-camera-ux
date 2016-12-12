@@ -1,0 +1,48 @@
+<Panel ux:Class="RecordButton">
+  <object ux:Property="ActiveMode" />
+
+  <JavaScript>
+    var Observable = require("FuseJS/Observable");
+    var activeMode = this.ActiveMode.inner();
+    module.exports = { activeMode };
+  </JavaScript>
+
+  <WhilePressed>
+    <Change centerCircle.Color="#999" Duration="0.2" />
+  </WhilePressed>
+  <Clicked>
+    <RaiseUserEvent EventName="Shoot" />
+  </Clicked>
+
+  <SolidOuterRing ux:Name="solidOuterRing" Opacity="0" />
+  <SloMotionOuterRing ux:Name="sloMotionOuterRing" Opacity="0" />
+  <TimeLapseOuterRing ux:Name="timeLapseOuterRing" Opacity="0" />
+
+  <StateGroup Active="{activeMode}">
+    <State ux:Name="timelapse">
+      <Change timeLapseOuterRing.Opacity="1" Duration="0.2" />
+      <Change centerCircle.Color="#ff0000" Duration="0.2" />
+    </State>
+    <State ux:Name="slomo">
+      <Change sloMotionOuterRing.Opacity="1" Duration="0.2" />
+      <Change centerCircle.Color="#ff0000" Duration="0.2" />
+    </State>
+    <State ux:Name="video">
+      <Change solidOuterRing.Opacity="1" Duration="0.2" />
+      <Change centerCircle.Color="#ff0000" Duration="0.2" />
+    </State>
+    <State ux:Name="photo">
+      <Change solidOuterRing.Opacity="1" Duration="0.2" />
+    </State>
+    <State ux:Name="square">
+      <Change solidOuterRing.Opacity="1" Duration="0.2" />
+    </State>
+    <State ux:Name="pano">
+      <Change solidOuterRing.Opacity="1" Duration="0.2" />
+    </State>
+  </StateGroup>
+
+  <Circle ux:Name="centerCircle" Color="#ffffff">
+    <Scaling Factor="0.73" />
+  </Circle>
+</Panel>

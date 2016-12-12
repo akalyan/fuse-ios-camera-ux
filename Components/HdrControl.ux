@@ -1,0 +1,36 @@
+<GenericControl ux:Class="HdrControl">
+  <Panel ux:Dependency="ParentElement" ux:Binding="ParentElement" />
+
+  <JavaScript>
+    var Observable = require("FuseJS/Observable");
+    var that = this;
+
+    var items = Observable(
+      { name: 'Auto', state: 'auto' },
+      { name: 'Off', state: 'off' },
+      { name: 'On', state: 'on' }
+    );
+
+    var selected = that.SelectedOption.inner();
+
+    var options = items.map(function(item) {
+      return {
+        name: item.name,
+        state: item.state,
+        selected: Observable(function() {
+          return selected.value == item.state;
+        })
+      };
+    });
+
+    module.exports = {
+      options
+    };
+  </JavaScript>
+
+  <HdrIcon ux:Template="Default" />
+
+  <HdrIcon ux:Template="auto" />
+  <HdrOffIcon ux:Template="off" />
+  <HdrIcon Color="#fa0" ux:Template="on" />
+</GenericControl>

@@ -1,0 +1,43 @@
+<GenericControl ux:Class="TimerControl">
+  <Panel ux:Dependency="ParentElement" ux:Binding="ParentElement" />
+
+  <JavaScript>
+    var Observable = require("FuseJS/Observable");
+    var that = this;
+
+    var items = Observable(
+      { name: 'Off', state: 'off' },
+      { name: '3s', state: 'three' },
+      { name: '10s', state: 'ten' }
+    );
+
+    var selected = that.SelectedOption.inner();
+
+    var options = items.map(function(item) {
+      return {
+        name: item.name,
+        state: item.state,
+        selected: Observable(function() {
+          return selected.value == item.state;
+        })
+      };
+    });
+
+    module.exports = {
+      options
+    };
+  </JavaScript>
+
+  <TimerIcon ux:Template="Default" />
+
+  <TimerIcon ux:Template="off" />
+  <StackPanel Alignment="Left" Orientation="Horizontal" ItemSpacing="5" ux:Template="three">
+    <TimerIcon Color="#fa0" />
+    <Text Color="#fa0" Font="DIN1451" FontSize="14" Value="3s" />
+  </StackPanel>
+  <StackPanel Alignment="Left" Orientation="Horizontal" ItemSpacing="5" ux:Template="ten">
+    <TimerIcon Color="#fa0" />
+    <Text Color="#fa0" Font="DIN1451" FontSize="14" Value="10s" />
+  </StackPanel>
+
+</GenericControl>

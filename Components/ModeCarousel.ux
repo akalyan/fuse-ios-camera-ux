@@ -1,0 +1,76 @@
+<Panel ux:Class="ModeCarousel">
+  <Activated>
+    <Callback Handler="{init}" />
+  </Activated>
+
+  <UserEvent ux:Name="Initialized" />
+  <UserEvent ux:Name="ActivatingAnimation" />
+  <UserEvent ux:Name="Activated" />
+
+  <JavaScript>
+    var Observable = require("FuseJS/Observable");
+    var pages = Observable(
+      {name: "PHOTO", id: "photo" },
+      {name: "SQUARE", id: "square" },
+      {name: "PANO", id: "pano" }
+    );
+
+    function init() {
+      pages.insertAt(0, {name: "VIDEO", id: "video" });
+      pages.insertAt(0, {name: "SLO-MO", id: "slomo" });
+      pages.insertAt(0, {name: "TIME-LAPSE", id: "timelapse" });
+
+      setTimeout(function() {
+        Initialized.raise();
+      }, 500);
+    }
+
+    module.exports = { init, pages };
+  </JavaScript>
+
+  <Mask File="assets/images/mask3.png" Mode="Alpha" />
+
+  <LinearNavigation>
+    <NavigationMotion GotoEasing="QuadraticOut" GotoDuration="0.3" />
+  </LinearNavigation>
+  <SwipeNavigate VelocityThreshold="0.5" SwipeDirection="Left" MaxPages="1"/>
+
+  <Panel ux:Name="self" ux:InnerClass="Mode">
+
+    <ActivatingAnimation>
+      <Change text.Color="#ffaa00" Duration="0.5" />
+      <RaiseUserEvent EventName="ActivatingAnimation" />
+    </ActivatingAnimation>
+    <Activated>
+      <RaiseUserEvent EventName="Activated">
+        <UserEventArg Name="mode" StringValue="{id}" />
+      </RaiseUserEvent>
+    </Activated>
+    <EnteringAnimation Scale="0.25">
+      <Move RelativeTo="Size">
+        <Keyframe Time="0.25" X="-0.2" />
+        <Keyframe Time="0.5"  X="-0.4" />
+        <Keyframe Time="0.75" X="-0.6" />
+        <Keyframe Time="1"    X="-0.8" />
+      </Move>
+    </EnteringAnimation>
+    <ExitingAnimation Scale="0.25">
+      <Move RelativeTo="Size">
+        <Keyframe Time="0.25" X="0.2" />
+        <Keyframe Time="0.5"  X="0.4" />
+        <Keyframe Time="0.75" X="0.6" />
+        <Keyframe Time="1"    X="0.8" />
+      </Move>
+    </ExitingAnimation>
+
+    <Panel HitTestMode="LocalBounds" Height="100%" Color="#00000000">
+      <DockPanel>
+        <Text Font="DIN1451" Dock="Bottom" Y="-80" ux:Name="text" Margin="10" FontSize="14" Alignment="Center" Color="#ffffff" Value="{name}"></Text>
+      </DockPanel>
+    </Panel>
+  </Panel>
+
+  <Each Items="{pages}">
+    <Mode ux:Name="{name}" Name="{name}"/>
+  </Each>
+</Panel>

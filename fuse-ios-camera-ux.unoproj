@@ -1,0 +1,23 @@
+{
+  "RootNamespace": "",
+  "Packages": [
+    "Fuse",
+    "FuseJS",
+    "Fuse.Camera",
+    "Fuse.Scripting"
+  ],
+  "Includes": [
+    "*",
+    "*.png:Bundle"
+  ],
+  "Projects": [
+    "../fuse-camerapanel/CameraStream_include.unoproj",
+    "../fuse-orientation/fuse-orientation.unoproj"
+  ],
+  "Excludes": [
+    "fuse_modules/"
+  ],
+  "Mobile": {
+    "Orientations": "Portrait"
+  }
+}

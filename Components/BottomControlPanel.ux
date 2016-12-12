@@ -1,0 +1,35 @@
+<Panel ux:Class="BottomControlPanel" HitTestMode="Children" Height="90">
+  <object ux:Property="ActiveMode" />
+
+  <UserEvent ux:Name="Shoot" />
+
+  <JavaScript>
+    var Observable = require("FuseJS/Observable");
+    var activeMode = this.ActiveMode.inner();
+    var isSloMo = Observable(function() {
+      return activeMode.value == "slomo";
+    });
+    module.exports = { activeMode, isSloMo };
+  </JavaScript>
+
+  <Grid RowCount="1" ColumnCount="3">
+
+    <AutoRotatingPanel Alignment="Left" Row="0" Column="0" Margin="15">
+      <Rectangle Width="50" Height="50" Color="#888888" />
+    </AutoRotatingPanel>
+
+    <RecordButton ActiveMode="{activeMode}" Margin="10" Alignment="Center" Row="0" Column="1" HitTestMode="LocalVisualAndChildren" />
+
+    <AutoRotatingPanel Alignment="CenterRight" HitTestMode="LocalBoundsAndChildren" Margin="10" Row="0" Column="2">
+      <CameraSwitchIcon ux:Name="cameraSwitchIcon" Width="30" />
+      <WhileTrue Value="{isSloMo}">
+        <Change cameraSwitchIcon.Visibility="Collapsed" />
+      </WhileTrue>
+      <Clicked>
+        <RaiseUserEvent EventName="Flip" />
+      </Clicked>
+    </AutoRotatingPanel>
+
+  </Grid>
+
+</Panel>

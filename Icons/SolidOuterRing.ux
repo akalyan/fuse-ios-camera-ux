@@ -1,0 +1,7 @@
+<Image ux:Class="SolidOuterRing">
+  <MultiDensityImageSource>
+    <FileImageSource Density="1" File="../Assets/images/filled.png" />
+    <FileImageSource Density="2" File="../Assets/images/filled@2x.png" />
+    <FileImageSource Density="4" File="../Assets/images/filled@4x.png" />
+  </MultiDensityImageSource>
+</Image>

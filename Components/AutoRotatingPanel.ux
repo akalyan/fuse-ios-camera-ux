@@ -1,0 +1,11 @@
+<OrientationReactiveControl ux:Class="AutoRotatingPanel">
+  <Rotation ux:Name="rot" />
+
+  <StateGroup Active="{orientation}">
+    <State ux:Name="uninitialized" />
+    <State ux:Name="portrait_up"><Change rot.Degrees="0" Duration="0.2" /></State>
+    <State ux:Name="landscape_right"><Change rot.Degrees="90" Duration="0.2" /></State>
+    <State ux:Name="portrait_down"><Change rot.Degrees="180" Duration="0.2" /></State>
+    <State ux:Name="landscape_left"><Change rot.Degrees="-90" Duration="0.2" /></State>
+  </StateGroup>
+</OrientationReactiveControl>

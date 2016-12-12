@@ -1,0 +1,115 @@
+<App>
+  <Viewport Perspective="2000" CullFace="None">
+    <iOS.StatusBarConfig IsVisible="False" />
+
+    <Navigator DefaultPath="camera">
+      <CameraPage ux:Template="camera" />
+    </Navigator>
+
+    <JavaScript>
+      var Observable = require("FuseJS/Observable");
+
+      var orientation = require("OrientationChangeListener");
+      orientation.subscribe();
+
+      var activeMode = Observable("photo");
+      var facing = Observable("Back");
+
+      function flip() {
+        if (facing.value == "Front") {
+          facing.value = "Back";
+        } else {
+          facing.value = "Front";
+        }
+      }
+
+      function setActiveMode(args) {
+        debug_log("Setting mode to: " + args.mode);
+        activeMode.value = args.mode;
+        ActiveModeChanged.raise();
+      }
+
+      var controls = {
+        flash: Observable("auto"),
+        hdr: Observable("auto"),
+        timer: Observable("off"),
+        effects: Observable("off")
+      };
+
+      function updateControlSelection(args) {
+        controls[args.control].value = args.selection;
+      }
+
+      module.exports = {
+        flip,
+        activeMode,
+        facing,
+        setActiveMode,
+        updateControlSelection
+      };
+
+    </JavaScript>
+
+    <Font File="Assets/fonts/alte-din-1451-mittelschrift/din1451alt.ttf" ux:Global="DIN1451" />
+
+    <UserEvent ux:Name="Flip" />
+    <UserEvent ux:Name="ActiveModeChanging" />
+    <UserEvent ux:Name="ActiveModeChanged" />
+
+    <Page ux:Class="CameraPage">
+
+      <Banner Text="Haha!! It's a fake app, sucker!" Opacity="0" ux:Name="shootResults">
+        <Rotation Degrees="-20" />
+      </Banner>
+
+      <DockPanel>
+
+        <!-- Top control panel -->
+        <TopControlPanel Dock="Top" ActiveMode="{activeMode}" Facing="{facing}">
+          <OnUserEvent EventName="UpdateControlSelection" Handler="{updateControlSelection}" />
+        </TopControlPanel>
+
+        <!-- Bottom control panel -->
+        <BottomControlPanel ux:Name="bottomControls" Dock="Bottom" ActiveMode="{activeMode}" Visibility="Hidden">
+          <OnUserEvent EventName="Shoot">
+            <Change shootResults.Opacity="1" Duration="0.2" DurationBack="0" />
+            <Set shootResults.Opacity="1" Delay="0.2" />
+            <Set shootResults.Opacity="0" Delay="3" />
+          </OnUserEvent>
+          <OnUserEvent EventName="Flip">
+            <Callback Handler="{flip}" Delay="0.5" />
+          </OnUserEvent>
+        </BottomControlPanel>
+
+      </DockPanel>
+
+      <!-- Carousel to select the mode -->
+      <ModeCarousel>
+        <OnUserEvent EventName="Initialized">
+          <Set bottomControls.Visibility="Visible" />
+        </OnUserEvent>
+        <OnUserEvent EventName="ActivatingAnimation">
+          <RaiseUserEvent EventName="ActiveModeChanging" />
+        </OnUserEvent>
+        <OnUserEvent EventName="Activated">
+          <RaiseUserEvent EventName="ActiveModeChanged" />
+        </OnUserEvent>
+        <OnUserEvent EventName="Activated" Handler="{setActiveMode}" />
+      </ModeCarousel>
+
+      <!-- Top and bottom control dock backgrounds
+           I've separated these from the actual controls b/c the controls and carousel
+           sit in front of the background
+      -->
+      <DockPanel>
+        <TopControlsDock Dock="Top" ActiveMode="{activeMode}" />
+        <BottomControlsDock Dock="Bottom" ActiveMode="{activeMode}" />
+      </DockPanel>
+
+      <!-- Camera panel -->
+      <CameraView ActiveMode="{activeMode}" Facing="{facing}" />
+
+    </Page>
+
+  </Viewport>
+</App>

@@ -1,0 +1,7 @@
+<Image ux:Class="SloMotionOuterRing">
+  <MultiDensityImageSource>
+    <FileImageSource Density="1" File="../Assets/images/slo-mo.png" />
+    <FileImageSource Density="2" File="../Assets/images/slo-mo@2x.png" />
+    <FileImageSource Density="4" File="../Assets/images/slo-mo@4x.png" />
+  </MultiDensityImageSource>
+</Image>

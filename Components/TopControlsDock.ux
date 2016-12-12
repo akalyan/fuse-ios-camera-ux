@@ -1,0 +1,30 @@
+<Panel ux:Class="TopControlsDock">
+  <object ux:Property="ActiveMode" />
+
+  <JavaScript>
+    var Observable = require("FuseJS/Observable");
+    var activeMode = this.ActiveMode.inner();
+    module.exports = { activeMode };
+  </JavaScript>
+
+  <Rectangle ux:Name="self" Color="#000000" Height="40" />
+
+  <StateGroup Active="{activeMode}">
+    <State ux:Name="timelapse">
+      <Change self.Height="0" Duration="0.2" />
+    </State>
+    <State ux:Name="slomo">
+      <Change self.Height="40" Duration="0.2" />
+      <Change self.Color="#0006" Duration="0.2" />
+    </State>
+    <State ux:Name="video">
+      <Change self.Height="40" Duration="0.2" />
+      <Change self.Color="#0006" Duration="0.2" />
+    </State>
+    <State ux:Name="photo"></State>
+    <State ux:Name="square"></State>
+    <State ux:Name="pano">
+      <Change self.Height="0" Duration="0.2" />
+    </State>
+  </StateGroup>
+</Panel>

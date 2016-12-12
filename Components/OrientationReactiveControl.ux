@@ -1,0 +1,14 @@
+<Panel ux:Class="OrientationReactiveControl">
+  <JavaScript>
+    var Observable = require("FuseJS/Observable");
+    var listener = require("OrientationChangeListener");
+
+    var orientation = Observable("uninitialized");
+
+    listener.on("orientationChanged", function(val) {
+      orientation.value = val;
+    });
+
+    module.exports = { orientation };
+  </JavaScript>
+</Panel>

@@ -1,0 +1,33 @@
+<GenericControl ux:Class="EffectsControl">
+  <Panel ux:Dependency="ParentElement" ux:Binding="ParentElement" />
+
+  <JavaScript>
+    var Observable = require("FuseJS/Observable");
+    var that = this;
+
+    var items = Observable(
+      { name: 'Off', state: 'off' }
+    );
+
+    var selected = that.SelectedOption.inner();
+
+    var options = items.map(function(item) {
+      return {
+        name: item.name,
+        state: item.state,
+        selected: Observable(function() {
+          return selected.value == item.state;
+        })
+      };
+    });
+
+    module.exports = {
+      options
+    };
+  </JavaScript>
+
+  <EffectsIcon ux:Template="Default" />
+
+  <EffectsIcon ux:Template="off" />
+
+</GenericControl>

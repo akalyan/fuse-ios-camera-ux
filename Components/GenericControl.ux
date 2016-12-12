@@ -1,0 +1,198 @@
+<Panel ux:Class="GenericControl">
+  <object ux:Property="ActivatedControl" />
+  <string ux:Property="ID" />
+  <string ux:Property="SelectedOption" />
+  <Panel ux:Dependency="ParentElement" />
+
+  <UserEvent ux:Name="Activated" />
+  <UserEvent ux:Name="SelectionUpdated" />
+
+  <JavaScript>
+    var Observable = require("FuseJS/Observable");
+    var that = this;
+
+    var listener = require("OrientationChangeListener");
+    var orientation = Observable("portrait_up");
+    listener.on("orientationChanged", function(val) {
+      orientation.value = val;
+      if (activated.value != "dormant" &&
+          activated.value != "hidden") {
+        activate(); // essentially de-activate
+      }
+    });
+
+    var activated = this.ActivatedControl.inner().map(function(val) {
+      var toReturn = "";
+      if (val == that.ID.value) {
+        toReturn = "active_" + orientation.value;
+      } else if (val == 'NONE') {
+        toReturn = "dormant";
+      } else {
+        if (orientation.value == "landscape_left" ||
+            orientation.value == "landscape_right") {
+          toReturn = "dormant";
+        } else {
+          toReturn = "hidden";
+        }
+      }
+      // debug_log(that.ID.value + ": " + toReturn);
+      return toReturn;
+    });
+
+    function activate() {
+      Activated.raise({activatedControl: that.ID.value});
+    }
+
+    function select(args) {
+      debug_log('Raising event with ' + args.data.state);
+      SelectionUpdated.raise({selection: args.data.state});
+      Activated.raise({activatedControl: that.ID.value});
+    }
+
+    module.exports = {
+      activated,
+      activate,
+      select,
+      orientation
+    };
+  </JavaScript>
+
+  <Panel ux:Name="original" />
+  <Panel LayoutMaster="ParentElement">
+    <Panel Alignment="Left" Width="50" ux:Name="left" />
+    <Panel Alignment="Right" Width="50" ux:Name="right" />
+  </Panel>
+
+  <Panel Padding="0,10" ux:Name="icon" HitTestMode="LocalBoundsAndChildren" Tapped="{activate}">
+    <LayoutAnimation>
+      <Move X="1" Y="1" RelativeTo="WorldPositionChange" Duration="0.2" Easing="ExponentialInOut" />
+    </LayoutAnimation>
+
+    <Panel>
+      <Rotation ux:Name="rotation" />
+
+      <Panel ux:Name="defaultIcon" Opacity="0">
+        <Each Count="1" TemplateSource="this" TemplateKey="Default" />
+      </Panel>
+
+      <Panel ux:Name="dormantIcon">
+        <Each Items="{options}">
+          <Panel ux:Name="selectedIcon" Opacity="0">
+            <Each Count="1" TemplateSource="this" TemplateKey="{state}" />
+            <WhileTrue Value="{selected}">
+              <Change selectedIcon.Opacity="1" Duration="0.1" />
+            </WhileTrue>
+          </Panel>
+        </Each>
+      </Panel>
+    </Panel>
+
+    <StateGroup Active="{orientation}">
+      <State ux:Name="uninitialized" />
+      <State ux:Name="portrait_up">
+        <Change rotation.Degrees="0" Duration="0.2" />
+      </State>
+      <State ux:Name="landscape_right">
+        <Change rotation.Degrees="90" Duration="0.2" />
+      </State>
+      <State ux:Name="portrait_down">
+        <Change rotation.Degrees="180" Duration="0.2" />
+      </State>
+      <State ux:Name="landscape_left">
+        <Change rotation.Degrees="-90" Duration="0.2" />
+      </State>
+    </StateGroup>
+
+  </Panel>
+
+  <StateGroup ux:Name="optionsStateGroup" Active="{activated}">
+    <State ux:Name="dormant">
+      <Change icon.Visibility="Visible" Delay="0" />
+      <Change icon.Opacity="1" Duration="0.2" />
+      <Change options.Visibility="Collapsed" Delay="0.2" />
+      <Change options.Opacity="0" Duration="0.2" />
+      <Set icon.LayoutMaster="original" />
+      <Set options.LayoutMaster="left" Delay="0.2" />
+    </State>
+    <State ux:Name="hidden">
+      <Change icon.Visibility="Collapsed" Delay="0.1" />
+      <Change icon.Opacity="0" Duration="0.1" />
+      <Change options.Visibility="Collapsed" Delay="0.1" />
+      <Change options.Opacity="0" Duration="0.1" />
+      <Set icon.LayoutMaster="original" />
+      <Set options.LayoutMaster="left" Delay="0.2" />
+    </State>
+    <State ux:Name="active_portrait_up">
+      <Set options.LayoutMaster="left" />
+      <Set optionsRotation.Degrees="0" />
+      <Change options.Visibility="Visible" Duration="0" />
+      <Change options.Opacity="1" Duration="0.2" />
+      <Change dormantIcon.Opacity="0" Duration="0.2" />
+      <Change defaultIcon.Opacity="1" Duration="0.2" />
+      <Set icon.LayoutMaster="left" />
+    </State>
+    <State ux:Name="active_portrait_down">
+      <Set options.LayoutMaster="right" />
+      <Set optionsRotation.Degrees="180" />
+      <Change options.Visibility="Visible" Duration="0" />
+      <Change options.Opacity="1" Duration="0.2" />
+      <Change dormantIcon.Opacity="0" Duration="0.2" />
+      <Change defaultIcon.Opacity="1" Duration="0.2" />
+      <Set icon.LayoutMaster="right" />
+    </State>
+    <State ux:Name="active_landscape_left">
+      <Set options.LayoutMaster="original" />
+      <Set optionsRotation.Degrees="90" />
+      <Change options.Visibility="Visible" Duration="0" />
+      <Change options.Opacity="1" Duration="0.2" />
+      <Change dormantIcon.Opacity="0" Duration="0.2" />
+      <Change defaultIcon.Opacity="1" Duration="0.2" />
+      <Set icon.LayoutMaster="original" />
+    </State>
+    <State ux:Name="active_landscape_right">
+      <Set options.LayoutMaster="original" />
+      <Set optionsRotation.Degrees="90" />
+      <Change options.Visibility="Visible" Duration="0" />
+      <Change options.Opacity="1" Duration="0.2" />
+      <Change dormantIcon.Opacity="0" Duration="0.2" />
+      <Change defaultIcon.Opacity="1" Duration="0.2" />
+      <Set icon.LayoutMaster="original" />
+    </State>
+
+  </StateGroup>
+
+  <OrientationReactiveControl ux:Class="OptionItem">
+    <Text Alignment="VerticalCenter" ux:Name="item" Font="DIN1451" FontSize="14" Color="#fff" Value="{name}">
+      <Shadow ux:Name="shadow" Mode="PerPixel" Distance="1" Size="0" />
+    </Text>
+    <WhileTrue Value="{selected}">
+      <Change item.Color="#fa0" Duration="0.2" />
+    </WhileTrue>
+
+    <StateGroup Active="{orientation}">
+      <State ux:Name="uninitialized" />
+      <State ux:Name="portrait_up"></State>
+      <State ux:Name="landscape_right">
+        <Change shadow.Size="6" Duration="0" />
+      </State>
+      <State ux:Name="portrait_down"></State>
+      <State ux:Name="landscape_left">
+        <Rotate DegreesY="180" Duration="0" />
+        <Rotate DegreesX="180" Duration="0" />
+        <Change shadow.Size="6" Duration="0" />
+      </State>
+    </StateGroup>
+  </OrientationReactiveControl>
+
+  <Panel LayoutMaster="left" TransformOrigin="Anchor" Anchor="50%,50%" ux:Name="options" Opacity="0">
+    <Rotation ux:Name="optionsRotation" />
+    <StackPanel ux:Name="optionItems" LayoutRole="Inert" ItemSpacing="60" Padding="100,0" Orientation="Horizontal">
+      <Each Items="{options}">
+        <Panel HitTestMode="LocalBoundsAndChildren" Clicked="{select}">
+          <OptionItem  />
+        </Panel>
+      </Each>
+    </StackPanel>
+  </Panel>
+
+</Panel>

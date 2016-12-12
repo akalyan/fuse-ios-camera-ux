@@ -1,0 +1,7 @@
+<Image ux:Class="FlashIcon">
+  <MultiDensityImageSource>
+    <FileImageSource Density="1" File="../Assets/images/flash-icon.png" />
+    <FileImageSource Density="2" File="../Assets/images/flash-icon@2x.png" />
+    <FileImageSource Density="4" File="../Assets/images/flash-icon@4x.png" />
+  </MultiDensityImageSource>
+</Image>

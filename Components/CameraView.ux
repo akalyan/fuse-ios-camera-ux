@@ -1,0 +1,98 @@
+<Panel ux:Class="CameraView">
+  <object ux:Property="ActiveMode" />
+  <object ux:Property="Facing" />
+
+  <JavaScript>
+    var Observable = require("FuseJS/Observable");
+    var activeMode = this.ActiveMode.inner();
+    var facing = this.Facing.inner();
+    module.exports = { activeMode, facing };
+  </JavaScript>
+
+  <OnUserEvent EventName="Flip">
+    <Set blur.Radius="2" Delay="0" />
+    <Pulse Target="flipTimeline" />
+    <Set blur.Radius="0" Delay="0.6" />
+  </OnUserEvent>
+
+  <OnUserEvent EventName="ActiveModeChanging">
+    <Set blur.Radius="10" />
+  </OnUserEvent>
+
+  <OnUserEvent EventName="ActiveModeChanged">
+    <Set blur.Radius="0" Delay="0.2" />
+  </OnUserEvent>
+
+  <Panel ux:Name="cameraPanel" Color="#000" LayoutMaster="cameraMaster">
+    <Blur ux:Name="blur" Radius="0" />
+
+    <!-- Use this element during dev -->
+    <!-- <Panel Color="#060">
+      <Text Font="DIN1451" Alignment="Center" Value="{facing}" Color="#ffffff" />
+    </Panel> -->
+
+    <!-- Use this element for the real camera stream -->
+    <CameraStream >
+      <Camera ux:Global="cam" />
+      <CameraVisual Facing="{facing}" />
+      <CameraExtended ux:Global="CameraExtended" Camera="cam" />
+    </CameraStream>
+
+  </Panel>
+
+  <!-- Panel to control the sizing/layout of the camera pane -->
+  <Panel Alignment="Center" Width="110%" Height="110%" Color="#000000">
+    <Panel Width="91%" Height="91%">
+
+      <DockPanel>
+        <Panel ux:Name="cameraMaster"></Panel>
+        <Panel ux:Name="topBuffer" Color="#000000" Dock="Top" Height="0"></Panel>
+        <Panel ux:Name="bottomBuffer" Color="#000000" Dock="Bottom" Height="0"></Panel>
+      </DockPanel>
+
+      <StateGroup Active="{activeMode}">
+        <State ux:Name="timelapse">
+          <Change topBuffer.Height="0" Duration="0.2" />
+          <Change bottomBuffer.Height="0" Duration="0.2" />
+        </State>
+        <State ux:Name="slomo">
+          <Change topBuffer.Height="0" Duration="0.2" />
+          <Change bottomBuffer.Height="0" Duration="0.2" />
+        </State>
+        <State ux:Name="video">
+          <Change topBuffer.Height="0" Duration="0.2" />
+          <Change bottomBuffer.Height="0" Duration="0.2" />
+        </State>
+        <State ux:Name="photo">
+          <Change topBuffer.Height="40" Duration="0.2" />
+          <Change bottomBuffer.Height="120" Duration="0.2" />
+        </State>
+        <State ux:Name="square">
+          <Change topBuffer.Height="100" Duration="0.2" />
+          <Change bottomBuffer.Height="200" Duration="0.2" />
+        </State>
+        <State ux:Name="pano">
+          <Change topBuffer.Height="0" Duration="0.2" />
+          <Change bottomBuffer.Height="0" Duration="0.2" />
+        </State>
+      </StateGroup>
+
+    </Panel>
+  </Panel>
+
+  <!-- Timeline to control the camera flip animation -->
+  <Timeline ux:Name="flipTimeline" TimeMultiplier="2">
+    <Rotate Target="cameraPanel">
+      <Keyframe DegreesY="0" Time="0" />
+      <Keyframe DegreesY="180" Time="1" />
+    </Rotate>
+    <Scale Target="cameraPanel">
+      <Keyframe Value="1,1" Time="0" />
+      <Keyframe Value="0.8,0.8" Time="0.5" />
+      <Keyframe Value="1,1" Time="1" />
+    </Scale>
+    <TriggerAnimation ux:Binding="BackwardAnimation">
+    </TriggerAnimation>
+  </Timeline>
+
+</Panel>

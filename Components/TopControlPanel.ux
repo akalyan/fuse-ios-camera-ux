@@ -1,0 +1,154 @@
+<Panel ux:Class="TopControlPanel" ux:Name="self" HitTestMode="Children" Height="40">
+  <object ux:Property="ActiveMode" />
+  <object ux:Property="Facing" />
+
+  <UserEvent ux:Name="UpdateControlSelection" />
+
+  <JavaScript>
+    var Observable = require("FuseJS/Observable");
+    var activeMode = this.ActiveMode.inner();
+    var facing = this.Facing.inner();
+
+    var controlActivated = Observable("NONE");
+    var isFront = Observable(function(val) { return facing.value == "Front" });
+
+    function toggleControlActivation(args) {
+      if (controlActivated.value == args.activatedControl) {
+        controlActivated.value = "NONE";
+      } else {
+        controlActivated.value = args.activatedControl;
+      }
+    }
+
+    function resetControlActivation() {
+      controlActivated.value = "NONE";
+    }
+
+    var flash = Observable("auto");
+    var hdr = Observable("auto");
+    var timer = Observable("off");
+    var effects = Observable("off");
+
+    function updateFlash(selection) {
+      flash.value = selection.selection;
+      UpdateControlSelection.raise({
+        control: "flash",
+        selection: selection.selection
+      });
+    }
+
+    function updateHdr(selection) {
+      hdr.value = selection.selection;
+      UpdateControlSelection.raise({
+        control: "hdr",
+        selection: selection.selection
+      });
+    }
+
+    function updateTimer(selection) {
+      timer.value = selection.selection;
+      UpdateControlSelection.raise({
+        control: "timer",
+        selection: selection.selection
+      });
+    }
+
+    function updateEffects(selection) {
+      effects.value = selection.selection;
+      UpdateControlSelection.raise({
+        control: "effects",
+        selection: selection.selection
+      });
+    }
+
+    module.exports = {
+      activeMode,
+      isFront,
+      controlActivated,
+      toggleControlActivation,
+      resetControlActivation,
+      flash,
+      updateFlash,
+      hdr,
+      updateHdr,
+      timer,
+      updateTimer,
+      effects,
+      updateEffects
+     };
+  </JavaScript>
+
+  <OnUserEvent EventName="ActiveModeChanged" Handler="{resetControlActivation}" />
+
+  <Grid ContentAlignment="VerticalCenter" Columns="50,1*,50,1*,50,1*,50" Opacity="1" ux:Name="controlsGrid">
+    <Panel Column="0" ux:Name="firstPanel">
+      <FlashControl SelectedOption="{flash}" ID="flash" ActivatedControl="{controlActivated}" ux:Name="flashControl" ParentElement="self">
+        <OnUserEvent EventName="Activated" Handler="{toggleControlActivation}" />
+        <OnUserEvent EventName="SelectionUpdated" Handler="{updateFlash}" />
+      </FlashControl>
+    </Panel>
+    <Panel Column="1"></Panel>
+    <Panel Column="2" ux:Name="secondPanel">
+      <HdrControl SelectedOption="{hdr}" ID="hdr" ActivatedControl="{controlActivated}" ux:Name="hdrControl" ParentElement="self">
+        <OnUserEvent EventName="Activated" Handler="{toggleControlActivation}" />
+        <OnUserEvent EventName="SelectionUpdated" Handler="{updateHdr}" />
+      </HdrControl>
+    </Panel>
+    <Panel Column="3"></Panel>
+    <Panel Column="4" ux:Name="thirdPanel">
+      <TimerControl SelectedOption="{timer}" ID="timer" ActivatedControl="{controlActivated}" ux:Name="timerControl" ParentElement="self">
+        <OnUserEvent EventName="Activated" Handler="{toggleControlActivation}" />
+        <OnUserEvent EventName="SelectionUpdated" Handler="{updateTimer}" />
+      </TimerControl>
+    </Panel>
+    <Panel Column="5"></Panel>
+    <Panel Column="6" ux:Name="fourthPanel">
+      <EffectsControl SelectedOption="{effects}" ID="effects" ActivatedControl="{controlActivated}" ux:Name="effectsControl" ParentElement="self">
+        <OnUserEvent EventName="Activated" Handler="{toggleControlActivation}" />
+        <OnUserEvent EventName="SelectionUpdated" Handler="{updateEffects}" />
+      </EffectsControl>
+    </Panel>
+  </Grid>
+
+  <WhileTrue Value="{isFront}">
+    <Change flashControl.Visibility="Hidden" />
+    <Change hdrControl.Visibility="Hidden" />
+  </WhileTrue>
+
+  <StateGroup ux:Name="topControlsStateGroup">
+    <State ux:Name="videoControls">
+      <Change self.Visibility="Visible" Duration="0.2" />
+      <Change hdrControl.Visibility="Hidden" Duration="0.2" />
+      <Change timerControl.Visibility="Hidden" Duration="0.2" />
+      <Change effectsControl.Visibility="Hidden" Duration="0.2" />
+    </State>
+    <State ux:Name="photoControls">
+      <Change self.Visibility="Visible" Duration="0.2" />
+    </State>
+    <State ux:Name="none">
+      <Change self.Visibility="Collapsed" Duration="0.2" />
+    </State>
+  </StateGroup>
+
+  <StateGroup Active="{activeMode}">
+    <State ux:Name="timelapse">
+      <Set topControlsStateGroup.Active="none" />
+    </State>
+    <State ux:Name="slomo">
+      <Set topControlsStateGroup.Active="videoControls" />
+    </State>
+    <State ux:Name="video">
+      <Set topControlsStateGroup.Active="videoControls" />
+    </State>
+    <State ux:Name="photo">
+      <Set topControlsStateGroup.Active="photoControls" />
+    </State>
+    <State ux:Name="square">
+      <Set topControlsStateGroup.Active="photoControls" />
+    </State>
+    <State ux:Name="pano">
+      <Set topControlsStateGroup.Active="none" />
+    </State>
+  </StateGroup>
+
+</Panel>

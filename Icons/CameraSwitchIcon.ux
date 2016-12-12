@@ -1,0 +1,7 @@
+<Image ux:Class="CameraSwitchIcon">
+  <MultiDensityImageSource>
+    <FileImageSource Density="1" File="../Assets/images/camera-switch-icon.png" />
+    <FileImageSource Density="2" File="../Assets/images/camera-switch-icon@2x.png" />
+    <FileImageSource Density="4" File="../Assets/images/camera-switch-icon@4x.png" />
+  </MultiDensityImageSource>
+</Image>
