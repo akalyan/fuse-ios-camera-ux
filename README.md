@@ -20,7 +20,7 @@ My hope is that the video above is indistinguishable from the stock iOS camera a
   - https://github.com/akalyan/fuse-camerapanel/tree/ak-observable-facing
   - https://github.com/akalyan/fuse-orientation
 3. Fix the references to those dependencies in the fuse-ios-camera-ux.unoproj file
-4. Build: `fuse build -t=ios -adebug` (you'll get a Fuse error if you try to preview the app with the camera stream on, but if you want to play with the app in preview, comment out the `CameraStream` element and uncomment [this one](blob/master/Components/CameraView.ux#L30) instead)
+4. Build: `fuse build -t=ios -adebug` (you'll get a Fuse error if you try to preview the app with the camera stream on, but if you want to play with the app in preview, comment out the `CameraStream` element and uncomment [this one](./Components/CameraView.ux#L30) instead)
 5. Ensure only `Portrait` is selected in the General tab in XCode
 6. Deploy to your device
 
